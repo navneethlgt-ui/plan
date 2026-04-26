@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfolio Account Implementation Plan</title>
+    <style>
+      :root {
+        --bg: #f6f3ea;
+        --panel: #fffdf8;
+        --panel-2: #f3eee2;
+        --ink: #1f2933;
+        --muted: #5f6c76;
+        --line: #ded6c6;
+        --accent: #8f4e2e;
+        --accent-2: #255f5a;
+        --warn: #95610c;
+        --good: #1f6b42;
+        --shadow: 0 16px 40px rgba(31, 41, 51, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        background:
+          radial-gradient(circle at top right, rgba(143, 78, 46, 0.08), transparent 22%),
+          linear-gradient(180deg, #faf7f0 0%, var(--bg) 100%);
+        color: var(--ink);
+        line-height: 1.55;
+      }
+
+      .wrap {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 32px 22px 80px;
+      }
+
+      .hero {
+        background:
+          linear-gradient(135deg, rgba(143, 78, 46, 0.08), rgba(37, 95, 90, 0.08)),
+          var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 32px;
+        box-shadow: var(--shadow);
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin: 0 0 12px;
+        line-height: 1.15;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        color: #2b2219;
+      }
+
+      h2 {
+        font-size: 1.6rem;
+        margin-top: 34px;
+      }
+
+      h3 {
+        font-size: 1.15rem;
+        margin-top: 22px;
+      }
+
+      p {
+        margin: 10px 0;
+      }
+
+      .subtle {
+        color: var(--muted);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 18px;
+        margin-top: 22px;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 20px;
+        box-shadow: var(--shadow);
+      }
+
+      .span-4 {
+        grid-column: span 4;
+      }
+
+      .span-6 {
+        grid-column: span 6;
+      }
+
+      .span-8 {
+        grid-column: span 8;
+      }
+
+      .span-12 {
+        grid-column: span 12;
+      }
+
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .pill {
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: var(--panel-2);
+        font-size: 0.95rem;
+      }
+
+      .pill.good {
+        color: var(--good);
+        border-color: rgba(31, 107, 66, 0.24);
+        background: rgba(31, 107, 66, 0.08);
+      }
+
+      .pill.warn {
+        color: var(--warn);
+        border-color: rgba(149, 97, 12, 0.24);
+        background: rgba(149, 97, 12, 0.08);
+      }
+
+      .pill.accent {
+        color: var(--accent);
+        border-color: rgba(143, 78, 46, 0.22);
+        background: rgba(143, 78, 46, 0.08);
+      }
+
+      ul {
+        margin: 10px 0 0 18px;
+      }
+
+      li + li {
+        margin-top: 6px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 14px;
+        font-size: 0.96rem;
+      }
+
+      th,
+      td {
+        border: 1px solid var(--line);
+        padding: 12px 10px;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        background: var(--panel-2);
+        color: #2d251d;
+      }
+
+      code,
+      pre {
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      }
+
+      pre {
+        background: #f8f4ea;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 16px;
+        overflow-x: auto;
+        white-space: pre-wrap;
+      }
+
+      .section-note {
+        border-left: 4px solid var(--accent);
+        padding: 12px 14px;
+        background: rgba(143, 78, 46, 0.06);
+        border-radius: 0 12px 12px 0;
+        margin-top: 14px;
+      }
+
+      .good-note {
+        border-left-color: var(--accent-2);
+        background: rgba(37, 95, 90, 0.07);
+      }
+
+      .small {
+        font-size: 0.92rem;
+      }
+
+      @media (max-width: 980px) {
+        .span-4,
+        .span-6,
+        .span-8,
+        .span-12 {
+          grid-column: span 12;
+        }
+
+        h1 {
+          font-size: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <section class="hero">
+        <p class="subtle">Mixalore Social App | Portfolio-as-Account Proposal | Prepared for FE + Client</p>
+        <h1>Portfolio Account Implementation Plan</h1>
+        <p>
+          This plan converts <strong>portfolio</strong> from a business-information object into an
+          <strong>account-like publishing identity</strong> managed by real user accounts. Users still
+          log in with their own account, but they can publish posts as a portfolio if they are the
+          owner or a moderator of that portfolio.
+        </p>
+        <div class="pill-row">
+          <span class="pill good">Decision locked: Portfolio posts are public only</span>
+          <span class="pill good">Decision locked: Post creation is separate for user and portfolio</span>
+          <span class="pill good">Decision locked: Feed remains one combined feed for user and portfolio posts</span>
+          <span class="pill good">Decision locked: Owner and moderator have the same portfolio-content permissions</span>
+          <span class="pill warn">Deferred: DMs to portfolio are not in this phase</span>
+          <span class="pill accent">Goal: Minimum breakage to existing APIs</span>
+        </div>
+      </section>
+
+      <section class="grid">
+        <div class="card span-4">
+          <h3>What Already Exists</h3>
+          <ul>
+            <li>Portfolio business profile model already exists.</li>
+            <li>Portfolio follow/unfollow APIs already exist.</li>
+            <li>Public portfolio listing/detail APIs already exist.</li>
+            <li>User post system already exists with feed, search, likes, comments, bookmarks.</li>
+          </ul>
+        </div>
+        <div class="card span-4">
+          <h3>Main Gap Today</h3>
+          <ul>
+            <li>Posts are still tied only to <code>UserProfile</code> author.</li>
+            <li>Portfolio owner/moderator membership is not modeled strongly enough.</li>
+            <li>Tagged posts for portfolios do not exist yet.</li>
+            <li>Search/feed/profile responses still assume the publisher is always a user.</li>
+          </ul>
+        </div>
+        <div class="card span-4">
+          <h3>End Result</h3>
+          <ul>
+            <li>Portfolio behaves like a public account.</li>
+            <li>Owner and moderators can publish under portfolio identity.</li>
+            <li>Public users can open portfolio profile, posts, tagged posts, and follow it.</li>
+            <li>Audit still records which real user performed the action.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h2>1. What Can Break During Implementation and What Must Be Fixed</h2>
+        <div class="card">
+          <p>
+            This feature can be implemented safely, but only if it is done as an <strong>additive change</strong>.
+            If we directly replace old fields and old assumptions, some existing app behaviors will break.
+          </p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Area</th>
+                <th>What Can Break</th>
+                <th>Why It Breaks</th>
+                <th>Required Fix</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Post create / read / update / delete</td>
+                <td>User post APIs may fail or return wrong publisher information</td>
+                <td>Current code assumes <code>post.author</code> is always a <code>UserProfile</code></td>
+                <td>
+                  Keep <code>author</code> for compatibility during rollout and add new publisher fields such as
+                  <code>publisherType</code>, <code>publisherUserId</code>, and <code>publisherPortfolioId</code>
+                </td>
+              </tr>
+              <tr>
+                <td>Feed</td>
+                <td>Portfolio posts may not appear correctly or may be filtered incorrectly</td>
+                <td>Feed logic currently applies user-follow and user-privacy logic using <code>author</code></td>
+                <td>
+                  Keep one combined feed query, but add portfolio-aware handling and treat portfolio posts as <code>public-only</code>
+                </td>
+              </tr>
+              <tr>
+                <td>User profile posts</td>
+                <td>Portfolio posts may show inside personal user profile by mistake</td>
+                <td>Current user-post queries fetch by <code>author</code></td>
+                <td>
+                  Update user profile APIs to return only user-published posts, not portfolio-published posts
+                </td>
+              </tr>
+              <tr>
+                <td>Search</td>
+                <td>Search results may miss portfolio posts or filter them incorrectly</td>
+                <td>Search excludes deleted/blocked content based on user <code>author</code> assumptions</td>
+                <td>
+                  Make search publisher-aware and add portfolio-specific search behavior and filters
+                </td>
+              </tr>
+              <tr>
+                <td>Likes and comments notifications</td>
+                <td>Notifications may go to wrong user or fail for portfolio posts</td>
+                <td>Current notification logic sends to <code>post.author</code> only</td>
+                <td>
+                  Use <code>createdBy</code> for audit, but define who receives notifications for portfolio posts,
+                  usually owner and moderators or only owner based on business rule
+                </td>
+              </tr>
+              <tr>
+                <td>Bookmarks</td>
+                <td>Bookmarked post cards may render wrong actor information</td>
+                <td>Bookmark module populates only <code>post.author</code></td>
+                <td>
+                  Return a normalized <code>publisher</code> object in bookmark responses
+                </td>
+              </tr>
+              <tr>
+                <td>Post activities / moderation queue</td>
+                <td>Hide/report/moderation screens may show wrong publisher identity</td>
+                <td>These flows also populate <code>post.author</code> as a user</td>
+                <td>
+                  Enrich moderation and activity APIs with publisher-aware response fields
+                </td>
+              </tr>
+              <tr>
+                <td>Group post wrappers</td>
+                <td>Posts shared into groups may display incomplete publisher data</td>
+                <td>Group-post relations select and populate only <code>author</code> and <code>mentions</code></td>
+                <td>
+                  Update group post wrappers to also return portfolio publisher data and portfolio tags
+                </td>
+              </tr>
+              <tr>
+                <td>Portfolio owner/moderator access</td>
+                <td>Moderators may not get access even after UI is ready</td>
+                <td>Current portfolio logic still checks only <code>portfolio.user</code> in key paths</td>
+                <td>
+                  Introduce <code>PortfolioMember</code> and update access checks everywhere portfolio ownership is assumed
+                </td>
+              </tr>
+              <tr>
+                <td>Portfolio follow protection</td>
+                <td>Owner/moderator follow rules may behave incorrectly</td>
+                <td>Current self-follow prevention checks only <code>portfolio.user</code></td>
+                <td>
+                  Define whether moderators can follow the portfolio and update the rule accordingly
+                </td>
+              </tr>
+              <tr>
+                <td>Portfolio add-on payments and lifecycle</td>
+                <td>Portfolio payment and add-on flows may deny valid users</td>
+                <td>Current add-on services check only direct owner relationship</td>
+                <td>
+                  Update payment lifecycle access to support the new portfolio member model where needed
+                </td>
+              </tr>
+              <tr>
+                <td>Admin portfolio workflows</td>
+                <td>Admin notifications and verification email logic may miss real operators</td>
+                <td>Admin services still read owner/moderator data from legacy fields</td>
+                <td>
+                  Keep legacy fields during transition or update admin flows to read from <code>PortfolioMember</code>
+                </td>
+              </tr>
+              <tr>
+                <td>Portfolio tagging</td>
+                <td>FE may allow tagging portfolio but backend may not save it</td>
+                <td>Current post validation supports only <code>mentions</code> for user IDs</td>
+                <td>
+                  Add a separate field such as <code>mentionedPortfolioIds</code> and update validation, save logic,
+                  retrieval, and tagged-posts APIs
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Implementation Safety Rule</h3>
+          <ul>
+            <li>Do not directly replace old fields first.</li>
+            <li>Add new publisher and portfolio-tag fields first.</li>
+            <li>Keep old fields working during migration.</li>
+            <li>Update read APIs before switching FE to new rendering.</li>
+            <li>Only remove old assumptions after all modules are migrated and tested.</li>
+          </ul>
+
+          <div class="section-note">
+            Best practice for proper working: implement this as a compatibility-based rollout, not as a hard replacement.
+            That means old user-post behavior must continue working while portfolio behavior is added beside it.
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>2. Final Product Behavior</h2>
+        <div class="card">
+          <ul>
+            <li>User logs in with normal user account only. No separate portfolio login is created.</li>
+            <li>A portfolio can have one owner and multiple moderators.</li>
+            <li>User posts and portfolio posts have separate creation sections, so there is no need to choose publisher inside one composer.</li>
+            <li>Feed is not separated. User posts and portfolio posts both appear in the same main feed.</li>
+            <li>If published as a portfolio, the feed/profile/search must show the portfolio as the publisher.</li>
+            <li>Portfolio posts are always public in this phase. User privacy modes are not used for portfolio posts.</li>
+            <li>Owner and moderators can create, edit, and delete portfolio posts, including posts created by other moderators.</li>
+            <li>Portfolio detail screen gets account-like tabs: <code>Posts</code>, <code>Tagged Posts</code>, <code>About</code>.</li>
+            <li>Users can follow portfolios, but portfolio posts do not require follower-only visibility.</li>
+            <li>Comments and likes remain user-based in this phase. They do not become portfolio-based yet.</li>
+          </ul>
+          <div class="section-note good-note">
+            DMs to portfolio can be implemented later cleanly. To make that possible, this phase should
+            introduce a proper <strong>publisher/actor model</strong> now, instead of hardcoding
+            everything to <code>author: UserProfile</code>.
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>3. Role and Permission Model</h2>
+        <div class="card">
+          <table>
+            <thead>
+              <tr>
+                <th>Actor</th>
+                <th>Can View Portfolio Dashboard</th>
+                <th>Can Create Portfolio Posts</th>
+                <th>Can Edit/Delete Any Portfolio Post</th>
+                <th>Can Manage Portfolio Details</th>
+                <th>Can Manage Members</th>
+                <th>Can Delete Portfolio</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Owner</td>
+                <td>Yes</td>
+                <td>Yes</td>
+                <td>Yes</td>
+                <td>Yes</td>
+                <td>Yes</td>
+                <td>Yes</td>
+              </tr>
+              <tr>
+                <td>Moderator</td>
+                <td>Yes</td>
+                <td>Yes</td>
+                <td>Yes</td>
+                <td>Yes</td>
+                <td>No in V1</td>
+                <td>Yes</td>
+              </tr>
+              <tr>
+                <td>Normal User</td>
+                <td>Public view only</td>
+                <td>No</td>
+                <td>No</td>
+                <td>No</td>
+                <td>No</td>
+                <td>No</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="small subtle">
+            <strong>Manage members</strong> means adding a moderator, removing a moderator, or changing who is allowed
+            to operate that portfolio. In this proposal, owner and moderator have the same portfolio usage permissions,
+            but only the owner manages the member list.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>4. Architecture Decision</h2>
+        <div class="grid">
+          <div class="card span-6">
+            <h3>Identity Model</h3>
+            <ul>
+              <li><strong>User account</strong> remains the real authenticated actor.</li>
+              <li><strong>Portfolio</strong> becomes a public publishing identity.</li>
+              <li><strong>PortfolioMember</strong> becomes the source of truth for owner/moderator access.</li>
+              <li><strong>Post publisher</strong> becomes polymorphic: user or portfolio.</li>
+            </ul>
+          </div>
+          <div class="card span-6">
+            <h3>Why This Is Better</h3>
+            <ul>
+              <li>Does not require a second login system.</li>
+              <li>Keeps audit trail of which human did the action.</li>
+              <li>Allows future DM-as-portfolio without redesigning again.</li>
+              <li>Minimizes breaking changes by extending current APIs instead of replacing them.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>5. Schema Changes</h2>
+        <div class="card">
+          <h3>4.1 Portfolio Schema</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Area</th>
+                <th>Current</th>
+                <th>Proposed</th>
+                <th>Migration Note</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Owner field</td>
+                <td><code>user</code> on portfolio</td>
+                <td>Keep <code>user</code> for backward compatibility, but treat it as primary owner summary only</td>
+                <td>Do not remove in phase 1</td>
+              </tr>
+              <tr>
+                <td>Moderators</td>
+                <td><code>about.moderators</code>, <code>about.adModerators</code></td>
+                <td>Move real access control to new <code>PortfolioMember</code> collection</td>
+                <td>Legacy arrays remain readable for temporary compatibility</td>
+              </tr>
+              <tr>
+                <td>Dashboard summary</td>
+                <td>No membership summary</td>
+                <td>Add computed summary such as <code>memberStats</code>, <code>postStats</code>, <code>taggedPostCount</code></td>
+                <td>Can be computed, not necessarily stored</td>
+              </tr>
+              <tr>
+                <td>Posting rule</td>
+                <td>No account-like publishing settings</td>
+                <td>Add <code>postingSettings.visibility = "public-only"</code> or enforce in service only</td>
+                <td>Service enforcement is enough for V1</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>4.2 New PortfolioMember Collection</h3>
+          <pre>{
+  portfolioId: ObjectId,
+  userProfileId: ObjectId,
+  role: "owner" | "moderator",
+  status: "active" | "removed",
+  permissions: [
+    "create_post",
+    "edit_any_post",
+    "delete_any_post",
+    "view_dashboard"
+  ],
+  invitedBy: ObjectId | null,
+  joinedAt: Date,
+  removedAt: Date | null,
+  createdAt: Date,
+  updatedAt: Date
+}</pre>
+          <p class="small subtle">
+            Index recommendation: unique on <code>(portfolioId, userProfileId)</code>, plus query indexes on
+            <code>userProfileId + status</code> and <code>portfolioId + role + status</code>.
+          </p>
+
+          <h3>4.3 Post Schema</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Field Group</th>
+                <th>Current</th>
+                <th>Proposed</th>
+                <th>Why</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Publisher</td>
+                <td><code>author: UserProfile</code></td>
+                <td>
+                  Add <code>publisherType: "user" | "portfolio"</code><br />
+                  Add <code>publisherUserId</code><br />
+                  Add <code>publisherPortfolioId</code>
+                </td>
+                <td>Lets a post visibly belong to a portfolio</td>
+              </tr>
+              <tr>
+                <td>Audit actor</td>
+                <td>Not separated from author</td>
+                <td>Add <code>createdBy: UserProfile</code>, <code>updatedBy: UserProfile</code></td>
+                <td>Needed because moderators publish on behalf of portfolio</td>
+              </tr>
+              <tr>
+                <td>User mentions</td>
+                <td><code>mentions: UserProfile[]</code></td>
+                <td>Keep existing user mentions</td>
+                <td>Backward-compatible</td>
+              </tr>
+              <tr>
+                <td>Portfolio mentions</td>
+                <td>Not available</td>
+                <td>Add <code>mentionedPortfolios: Portfolio[]</code></td>
+                <td>Needed for portfolio tagged-posts tab</td>
+              </tr>
+              <tr>
+                <td>Visibility</td>
+                <td><code>privacy</code> supports many user modes</td>
+                <td>For portfolio posts, backend forces <code>privacy = "public"</code></td>
+                <td>Simplifies V1</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <pre>{
+  _id: ObjectId,
+  author: ObjectId,                 // keep temporarily for compatibility on old code paths
+  publisherType: "user" | "portfolio",
+  publisherUserId: ObjectId | null,
+  publisherPortfolioId: ObjectId | null,
+  createdBy: ObjectId,
+  updatedBy: ObjectId | null,
+  mentions: [UserProfile ObjectId],
+  mentionedPortfolios: [Portfolio ObjectId],
+  privacy: "public" | "friends" | "followers" | "private" | "only_share_with" | "except",
+  ...
+}</pre>
+          <div class="section-note">
+            Migration rule for existing posts: <code>publisherType = "user"</code>,
+            <code>publisherUserId = author</code>, <code>createdBy = author</code>.
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>6. Existing API Changes: Old vs New</h2>
+        <div class="card">
+          <table>
+            <thead>
+              <tr>
+                <th>API</th>
+                <th>Old</th>
+                <th>New</th>
+                <th>FE / Client Impact</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>POST /api/v1/users/posts</code></td>
+                <td>Creates post only as logged-in user</td>
+                <td>
+                  Add optional <code>mentionedPortfolioIds</code><br />
+                  Endpoint keeps working for user posts only
+                </td>
+                <td>No change for user-post composer</td>
+              </tr>
+              <tr>
+                <td><code>PATCH /api/v1/users/posts/:postId</code></td>
+                <td>Only original author can edit</td>
+                <td>Portfolio owner/moderator with permission can edit any portfolio post</td>
+                <td>FE can show edit action for moderators too</td>
+              </tr>
+              <tr>
+                <td><code>DELETE /api/v1/users/posts/:postId</code></td>
+                <td>Only original author can delete</td>
+                <td>Portfolio owner/moderator with permission can delete any portfolio post</td>
+                <td>FE can show delete action for moderators too</td>
+              </tr>
+              <tr>
+                <td><code>GET /api/v1/users/posts/:postId</code><br /><code>GET /api/v1/users/posts/public/:postId</code></td>
+                <td>Response is centered on <code>author</code> only</td>
+                <td>
+                  Response adds <code>publisher</code>, <code>publisherType</code>, <code>createdBy</code>,
+                  <code>mentionedPortfolios</code>, <code>canEdit</code>, <code>canDelete</code>
+                </td>
+                <td>FE should render publisher block instead of assuming author is always a user</td>
+              </tr>
+              <tr>
+                <td><code>GET /api/v1/users/posts/feed</code></td>
+                <td>Feed mixes only user-authored posts with privacy filtering</td>
+                <td>
+                  Feed remains one combined feed and includes public portfolio posts<br />
+                  Portfolio posts ignore follower/friends privacy logic
+                </td>
+                <td>FE feed card must support user publisher and portfolio publisher</td>
+              </tr>
+              <tr>
+                <td><code>GET /api/v1/users/posts/allfeeds</code></td>
+                <td>Same assumption: post publisher is user</td>
+                <td>Same response enrichment as feed</td>
+                <td>Same UI adjustment as feed</td>
+              </tr>
+              <tr>
+                <td><code>GET /api/v1/users/posts/user/:userId</code></td>
+                <td>Returns posts authored by that user</td>
+                <td>Returns only posts where publisher is that user; excludes portfolio posts created by that user</td>
+                <td>User profile page remains correct and does not leak business posts into personal profile</td>
+              </tr>
+              <tr>
+                <td><code>GET /api/v1/users/posts/user/:userId/mentions</code></td>
+                <td>Returns user-tagged posts only</td>
+                <td>No breaking change; remains user mentions only</td>
+                <td>No immediate FE change</td>
+              </tr>
+              <tr>
+                <td><code>GET /api/v1/users/posts/search</code></td>
+                <td>Can filter by <code>author</code></td>
+                <td>
+                  Keep <code>author</code> temporarily for backward compatibility<br />
+                  Add <code>publisherType</code>, <code>publisherUserId</code>,
+                  <code>publisherPortfolioId</code>, <code>mentionedPortfolioId</code>
+                </td>
+                <td>FE can search/filter portfolio posts directly</td>
+              </tr>
+              <tr>
+                <td><code>GET /api/v1/users/search</code></td>
+                <td>Unified search has posts/users/groups/etc, but no portfolio type</td>
+                <td>Add <code>portfolios</code> as a search type and return post publishers correctly</td>
+                <td>FE global search can show portfolios as first-class results</td>
+              </tr>
+              <tr>
+                <td><code>GET /api/v1/users/portfolios/:portfolioId</code></td>
+                <td>Public portfolio detail only</td>
+                <td>Add <code>myMembership</code>, <code>myPermissions</code>, <code>postCount</code>, <code>taggedPostCount</code></td>
+                <td>FE can decide whether to show manage/create-post buttons</td>
+              </tr>
+              <tr>
+                <td><code>GET /api/v1/users/portfolios/me/list</code></td>
+                <td>Owned portfolios only</td>
+                <td>Recommendation: keep unchanged for backward compatibility</td>
+                <td>No breakage</td>
+              </tr>
+              <tr>
+                <td><code>PATCH /api/v1/users/portfolios/:portfolioId</code></td>
+                <td>Owner only</td>
+                <td>Owner and moderator can both update portfolio details</td>
+                <td>FE can show portfolio edit options to both roles</td>
+              </tr>
+              <tr>
+                <td><code>POST /api/v1/users/portfolios/:portfolioId/publish</code><br /><code>GET /draft</code><br /><code>PATCH /steps/:step</code><br /><code>DELETE /:portfolioId</code></td>
+                <td>Owner-only draft lifecycle</td>
+                <td>Owner and moderator can both operate the portfolio lifecycle</td>
+                <td>FE portfolio admin area can behave the same for owner and moderator</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>7. New APIs to Add</h2>
+        <div class="card">
+          <table>
+            <thead>
+              <tr>
+                <th>New API</th>
+                <th>Purpose</th>
+                <th>Auth</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>GET /api/v1/users/portfolios/me/managed</code></td>
+                <td>Return portfolios where current user is owner or moderator</td>
+                <td>Required</td>
+                <td>Main list for portfolio creation/dashboard section, not a separate feed</td>
+              </tr>
+              <tr>
+                <td><code>GET /api/v1/users/portfolios/:portfolioId/posts</code></td>
+                <td>Public portfolio timeline</td>
+                <td>Optional auth</td>
+                <td>Used on portfolio profile page</td>
+              </tr>
+              <tr>
+                <td><code>GET /api/v1/users/portfolios/:portfolioId/tagged-posts</code></td>
+                <td>Posts where portfolio is tagged</td>
+                <td>Optional auth</td>
+                <td>Requires <code>mentionedPortfolios</code> support in post schema</td>
+              </tr>
+              <tr>
+                <td><code>GET /api/v1/users/portfolios/:portfolioId/members</code></td>
+                <td>View owner/moderators</td>
+                <td>Required</td>
+                <td>Use this screen to show who can operate this portfolio</td>
+              </tr>
+              <tr>
+                <td><code>POST /api/v1/users/portfolios/:portfolioId/members</code></td>
+                <td>Add moderator</td>
+                <td>Required</td>
+                <td>This is part of "manage members"</td>
+              </tr>
+              <tr>
+                <td><code>PATCH /api/v1/users/portfolios/:portfolioId/members/:memberId</code></td>
+                <td>Change role/status/permissions</td>
+                <td>Required</td>
+                <td>This is part of "manage members"</td>
+              </tr>
+              <tr>
+                <td><code>DELETE /api/v1/users/portfolios/:portfolioId/members/:memberId</code></td>
+                <td>Remove moderator</td>
+                <td>Required</td>
+                <td>This is part of "manage members"</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>8. Recommended Request / Response Contract</h2>
+        <div class="grid">
+          <div class="card span-6">
+            <h3>Old Create Post Request</h3>
+            <pre>{
+  "type": "image",
+  "content": "Summer arrivals",
+  "media": [...],
+  "mentions": ["userProfileId1", "userProfileId2"],
+  "privacy": "public"
+}</pre>
+          </div>
+          <div class="card span-6">
+          <h3>New Portfolio Post Request</h3>
+          <pre>{
+  "type": "image",
+  "content": "Summer arrivals",
+  "media": [...],
+  "mentions": ["userProfileId1", "userProfileId2"],
+  "mentionedPortfolioIds": ["portfolioIdA"],
+  "privacy": "public"
+}</pre>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 18px">
+          <h3>Recommended Post Response Shape</h3>
+          <pre>{
+  "_id": "postId",
+  "publisherType": "portfolio",
+  "publisher": {
+    "_id": "portfolioIdB",
+    "type": "portfolio",
+    "name": "Dress Hub",
+    "avatar": { "url": "..." },
+    "isFollowing": true
+  },
+  "createdBy": {
+    "_id": "userProfileId99",
+    "name": "Moderator User"
+  },
+  "content": "Summer arrivals",
+  "mentions": [...user mentions...],
+  "mentionedPortfolios": [
+    {
+      "_id": "portfolioIdA",
+      "businessName": "Style Partner"
+    }
+  ],
+  "privacy": "public",
+  "canEdit": true,
+  "canDelete": true
+}</pre>
+          <p class="small subtle">
+            FE should switch from rendering only <code>author</code> to rendering <code>publisher</code>.
+            During transition, backend may still keep <code>author</code> in the payload for old clients.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>9. Tagging Portfolios: Search and Save Scenarios</h2>
+        <div class="card">
+          <p>
+            If portfolio tagging is part of the feature, then portfolio must also appear in the mention/tag search.
+            The important rule is: <strong>user tags and portfolio tags should not be stored in one mixed field</strong>.
+          </p>
+
+          <h3>8.1 Search Behavior</h3>
+          <ul>
+            <li>When user types <code>@</code> while writing a post, search results should return both users and portfolios.</li>
+            <li>The FE should show one combined dropdown list, but each result should clearly show its type.</li>
+            <li>Example dropdown rows: <code>John Mathew - User</code>, <code>Dress Hub - Portfolio</code>, <code>Car Zone - Portfolio</code>.</li>
+            <li>This search behavior should be the same in both sections: normal user-post section and portfolio-post section.</li>
+          </ul>
+
+          <h3>8.2 Save Behavior</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Selected Tag Type</th>
+                <th>Save Field</th>
+                <th>Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>User</td>
+                <td><code>mentions: [userProfileId]</code></td>
+                <td>Existing user mention behavior stays the same</td>
+              </tr>
+              <tr>
+                <td>Portfolio</td>
+                <td><code>mentionedPortfolioIds: [portfolioId]</code></td>
+                <td>Used to show tagged posts inside portfolio profile</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>8.3 Scenario Examples</h3>
+          <ul>
+            <li><strong>Scenario 1:</strong> A normal user creates a post and tags another user. Save into <code>mentions</code> only.</li>
+            <li><strong>Scenario 2:</strong> A normal user creates a post and tags a portfolio. Save into <code>mentionedPortfolioIds</code> only.</li>
+            <li><strong>Scenario 3:</strong> A normal user creates a post and tags both a user and a portfolio. Save users in <code>mentions</code> and portfolios in <code>mentionedPortfolioIds</code>.</li>
+            <li><strong>Scenario 4:</strong> A moderator creates a post from the portfolio section and tags a user. The post publisher is portfolio, but tagged user still goes into <code>mentions</code>.</li>
+            <li><strong>Scenario 5:</strong> A moderator creates a post from the portfolio section and tags another portfolio. The post publisher is portfolio, and tagged portfolio goes into <code>mentionedPortfolioIds</code>.</li>
+            <li><strong>Scenario 6:</strong> A public visitor opens a portfolio profile and goes to <code>Tagged Posts</code>. They should see posts where that portfolio ID exists in <code>mentionedPortfolioIds</code>.</li>
+          </ul>
+
+          <h3>8.4 Recommended Mention Search API</h3>
+          <pre>GET /api/v1/users/search/mentions?q=dre
+
+Response:
+{
+  "success": true,
+  "data": {
+    "users": [
+      {
+        "_id": "userProfileId1",
+        "type": "user",
+        "name": "Drex John",
+        "avatar": {}
+      }
+    ],
+    "portfolios": [
+      {
+        "_id": "portfolioId1",
+        "type": "portfolio",
+        "businessName": "Dress Hub",
+        "portfolioImage": {}
+      }
+    ]
+  }
+}</pre>
+
+          <h3>8.5 FE Rendering Notes</h3>
+          <ul>
+            <li>FE should keep one visual search list for tags, but each result must show whether it is a user or portfolio.</li>
+            <li>FE should send selected user IDs to <code>mentions</code>.</li>
+            <li>FE should send selected portfolio IDs to <code>mentionedPortfolioIds</code>.</li>
+            <li>FE should support portfolio tagged-post display on the portfolio public profile.</li>
+          </ul>
+
+          <div class="section-note">
+            Recommendation: do not overload the current <code>mentions</code> array with both users and portfolios.
+            Keep two separate fields so notifications, tagged-post queries, and profile rendering stay simple.
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>10. Migration and Rollout Plan</h2>
+        <div class="card">
+          <table>
+            <thead>
+              <tr>
+                <th>Phase</th>
+                <th>Backend Work</th>
+                <th>FE Work</th>
+                <th>Risk Level</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Phase 1: Schema prep</td>
+                <td>Add <code>PortfolioMember</code>, add new post publisher fields, add mention portfolio fields</td>
+                <td>No FE dependency yet</td>
+                <td>Low</td>
+              </tr>
+              <tr>
+                <td>Phase 2: Data migration</td>
+                <td>Backfill portfolio owner/moderators into memberships, backfill existing posts into publisher fields</td>
+                <td>No FE change yet</td>
+                <td>Medium</td>
+              </tr>
+              <tr>
+                <td>Phase 3: Read-path compatibility</td>
+                <td>Update feeds, post detail, search, portfolio detail, unified search, profile queries</td>
+                <td>Start using <code>publisher</code> object in read UI</td>
+                <td>Medium</td>
+              </tr>
+              <tr>
+                <td>Phase 4: Write-path enablement</td>
+                <td>Enable create/edit/delete as portfolio and add member APIs</td>
+                <td>Add dedicated portfolio posting section and manage buttons</td>
+                <td>Medium</td>
+              </tr>
+              <tr>
+                <td>Phase 5: Tagged portfolio view</td>
+                <td>Enable <code>mentionedPortfolios</code> and tagged-posts API</td>
+                <td>Add tagged tab on portfolio page</td>
+                <td>Low</td>
+              </tr>
+              <tr>
+                <td>Phase 6: Cleanup</td>
+                <td>Deprecation warnings around old fields such as direct moderator arrays</td>
+                <td>Remove old author-only assumptions</td>
+                <td>Low</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>11. What FE Team Must Change</h2>
+        <div class="card">
+          <ul>
+            <li>Keep a separate user posting section and a separate portfolio posting section.</li>
+            <li>Do not create a separate portfolio feed screen unless business asks later; both post types render in the same feed.</li>
+            <li>Render feed/post cards using a generic publisher component instead of assuming user author only.</li>
+            <li>Add portfolio dashboard list using <code>/portfolios/me/managed</code>.</li>
+            <li>Add portfolio public profile tabs: <code>Posts</code>, <code>Tagged Posts</code>, <code>About</code>.</li>
+            <li>Add permission-based actions from backend response: show/hide edit/delete/create buttons.</li>
+            <li>Handle combined tag search dropdown with both users and portfolios.</li>
+            <li>Send user tags to <code>mentions</code> and portfolio tags to <code>mentionedPortfolioIds</code>.</li>
+            <li>Keep likes/comments UI user-based for this phase.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h2>12. What Client Needs to Know</h2>
+        <div class="card">
+          <ul>
+            <li>This is not creating a second login account; it is creating a business identity managed by existing users.</li>
+            <li>Owner and moderators use the portfolio in almost the same way for normal operations.</li>
+            <li>The only special owner area is <strong>manage members</strong>, which means adding/removing moderators or changing portfolio access.</li>
+            <li>Portfolio posts are public only in phase 1, which reduces complexity and speeds release.</li>
+            <li>Followers can follow portfolios, but following is not required to view portfolio posts.</li>
+            <li>Users can tag portfolios in posts, and tagged portfolio posts will appear in the portfolio's tagged-posts section.</li>
+            <li>Portfolio DMs are intentionally deferred, not blocked. The architecture proposed here keeps that future open.</li>
+            <li>Comments and likes remain from user accounts in this phase unless business decides to expand scope.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h2>13. Deferred Scope: DMs to Portfolio</h2>
+        <div class="card">
+          <p>
+            Yes, DMs to portfolio can be done later cleanly if we keep the actor model correct now. Current chat
+            collections are still user-only: participants and senders point only to <code>UserProfile</code>.
+          </p>
+          <h3>Future Chat Schema Direction</h3>
+          <pre>{
+  conversation.participants: [
+    {
+      participantType: "user" | "portfolio",
+      userId: ObjectId | null,
+      portfolioId: ObjectId | null
+    }
+  ],
+  message: {
+    senderType: "user" | "portfolio",
+    senderUserId: ObjectId | null,
+    senderPortfolioId: ObjectId | null,
+    sentByUserId: ObjectId
+  }
+}</pre>
+          <p class="small subtle">
+            That future change is independent from the portfolio-post rollout as long as posts are redesigned now
+            around <code>publisher</code> and <code>createdBy</code>.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>14. Final Recommendation</h2>
+        <div class="card">
+          <p>
+            The best path is to keep existing user login and portfolio follow features, add a real
+            <strong>PortfolioMember</strong> model, extend posts with a <strong>publisher</strong> concept,
+            add <strong>portfolio tagged-post support</strong>, and keep portfolio posts <strong>public-only</strong>
+            in V1.
+          </p>
+          <p>
+            This gives the client the business-account behavior they want, keeps FE changes understandable,
+            avoids a second login architecture, and leaves a clean future path for DMs to portfolio.
+          </p>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>
